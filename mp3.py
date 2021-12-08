@@ -10,14 +10,21 @@ import gensim.downloader as api
 
 # Loading the pretrained model word vectors
 wv = KeyedVectors.load('GoogleNews300.wordvectors', mmap='r')    # Read-only
-
 # Loading the synonym question-words into a data frame
 df = pd.read_csv("synonyms.csv", delimiter=',')
 print(df.head())
 
+# Setting up analysis parameters
+analysis = {
+    'model_name' : 'word2vec-google-news-300',
+    'corpus_size' : len(wv),
+    'c' : 0,
+    'v' : 0
+}
+
 # Finding best synonyms row by row
 GoogleNews300_details = []
-with open('GoogleNews300-details.csv', 'w') as file:
+with open('GoogleNews300-details.csv', 'w') as file:    
     for i in range(len(df.index)):
         question = df.iloc[i]["question"]
         answer = df.iloc[i]["answer"]
@@ -29,8 +36,10 @@ with open('GoogleNews300-details.csv', 'w') as file:
             guess = options[np.argmax(scores)]
             if guess == answer:
                 label = "correct"
+                analysis['c'] = analysis.get('c', 0) + 1
             else:
                 label = "incorrect"
+            analysis['v'] = analysis.get('v', 0) + 1
         else:
             guess = options[np.random.randint(0,3)]
             label = "guess"
@@ -38,3 +47,7 @@ with open('GoogleNews300-details.csv', 'w') as file:
         # Write line to csv file
         writer = csv.writer(file, delimiter=',')
         writer.writerows(output_line)
+with open('analysis.csv', 'a') as file:
+    analysis['accuracy'] = analysis.get('c') / analysis.get('v') if analysis.get('v') > 0 else 0
+    writer = csv.writer(file, delimiter=',')
+    writer.writerows([analysis.values()])
