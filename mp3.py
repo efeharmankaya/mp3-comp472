@@ -3,51 +3,124 @@ import numpy as np
 import pandas as pd
 from gensim.models import KeyedVectors
 import gensim.downloader as api
+import os.path
 
-# Download the pretrained model word vectors using gensim.downloader and save it. Run this code only once.
-# wv = api.load('word2vec-google-news-300')
-# wv.save('GoogleNews300.wordvectors')
+import json
+def pr(x):
+    print(json.dumps(x,indent=4))
 
-# Loading the pretrained model word vectors
-wv = KeyedVectors.load('GoogleNews300.wordvectors', mmap='r')    # Read-only
-# Loading the synonym question-words into a data frame
-df = pd.read_csv("synonyms.csv", delimiter=',')
-print(df.head())
+# Show list of available models
+# pr(api.info().get('models'))
 
-# Setting up analysis parameters
-analysis = {
-    'model_name' : 'word2vec-google-news-300',
-    'corpus_size' : len(wv),
-    'c' : 0,
-    'v' : 0
-}
+models = [
+    # base model
+    {'model_name' : 'word2vec-google-news-300', 'model_file_name' : 'GoogleNews300.wordvectors', 'details_file_name' : 'GoogleNews300-details.csv'},
 
-# Finding best synonyms row by row
-GoogleNews300_details = []
-with open('GoogleNews300-details.csv', 'w') as file:    
-    for i in range(len(df.index)):
-        question = df.iloc[i]["question"]
-        answer = df.iloc[i]["answer"]
-        options = [df.iloc[i]['0'], df.iloc[i]['1'], df.iloc[i]['2'], df.iloc[i]['3']]
-        # Check if the question-word and at least 1 option word are contained in the word vector
-        if question in wv and (options[0] in wv or options[1] in wv or options[2] in wv or options[3] in wv):
-            scores = [wv.similarity(question, options[0]), wv.similarity(question, options[1]),
-                    wv.similarity(question, options[2]), wv.similarity(question, options[3])]
-            guess = options[np.argmax(scores)]
-            if guess == answer:
-                label = "correct"
-                analysis['c'] = analysis.get('c', 0) + 1
-            else:
-                label = "incorrect"
-            analysis['v'] = analysis.get('v', 0) + 1
-        else:
-            guess = options[np.random.randint(0,3)]
-            label = "guess"
-        output_line = [[question, answer, guess, label]]
-        # Write line to csv file
-        writer = csv.writer(file, delimiter=',')
-        writer.writerows(output_line)
-with open('analysis.csv', 'a') as file:
-    analysis['accuracy'] = analysis.get('c') / analysis.get('v') if analysis.get('v') > 0 else 0
-    writer = csv.writer(file, delimiter=',')
-    writer.writerows([analysis.values()])
+    # # same embedding size (300)
+    {'model_name' : 'glove-wiki-gigaword-300', 'model_file_name' : 'GloveWikiGigaword300.wordvectors', 'details_file_name' : 'GloveWikiGigaword300-details.csv'},
+    {'model_name' : 'conceptnet-numberbatch-17-06-300', 'model_file_name' : 'ConceptNet300.wordvectors', 'details_file_name' : 'ConceptNet300-details.csv'},
+        
+    # # different embedding size (25,100)
+    {'model_name' : 'glove-twitter-25', 'model_file_name' : 'GloveTwitter25.wordvectors', 'details_file_name' : 'GloveTwitter25-details.csv'},
+    {'model_name' : 'glove-wiki-gigaword-100', 'model_file_name' : 'GloveWikiGigaword100.wordvectors', 'details_file_name' : 'GloveWikiGigaword100-details.csv'},
+]
+
+def load_models():
+    # Download the pretrained model word vectors using gensim.downloader and save it. Runs only once.
+    for model in models:
+        if not os.path.exists(f'models/{model.get("model_file_name")}'):
+            wv = api.load(model.get('model_name'))
+            wv.save(f'models/{model.get("model_file_name")}')
+
+def run():
+    # Ensure all models are loaded and saved
+    load_models()    
+    
+    for model in models:
+        wv = KeyedVectors.load(f'models/{model.get("model_file_name")}', mmap='r')    # Read-only
+        df = pd.read_csv("models/synonyms.csv", delimiter=',')
+        
+        # Set analysis parameters to current model
+        analysis = {
+            'model_name' : model.get('model_name'),
+            'corpus_size' : len(wv),
+            'c' : 0,
+            'v' : 0
+        }
+        
+        with open(f'output/{model.get("details_file_name")}', 'w') as file:    
+            for i in range(len(df.index)):
+                question = df.iloc[i]["question"]
+                answer = df.iloc[i]["answer"]
+                options = [df.iloc[i]['0'], df.iloc[i]['1'], df.iloc[i]['2'], df.iloc[i]['3']]
+                # Check if the question-word and at least 1 option word are contained in the word vector
+                if question in wv and (options[0] in wv or options[1] in wv or options[2] in wv or options[3] in wv):
+                    scores = [wv.similarity(question, option) for option in options if wv.get_index(option, -1) > -1]
+                    guess = options[np.argmax(scores)]
+                    if guess == answer:
+                        label = "correct"
+                        analysis['c'] = analysis.get('c', 0) + 1
+                    else:
+                        label = "incorrect"
+                    analysis['v'] = analysis.get('v', 0) + 1
+                else:
+                    guess = options[np.random.randint(0,3)]
+                    label = "guess"
+                output_line = [[question, answer, guess, label]]
+                
+                # Write line to csv file
+                writer = csv.writer(file, delimiter=',')
+                writer.writerows(output_line)
+        with open('output/analysis.csv', 'a') as file:
+            analysis['accuracy'] = analysis.get('c') / analysis.get('v', -1) if analysis.get('v', 0) > 0 else 0
+            writer = csv.writer(file, delimiter=',')
+            writer.writerows([analysis.values()])
+        
+        
+# # Loading the pretrained model word vectors
+# wv = KeyedVectors.load('GoogleNews300.wordvectors', mmap='r')    # Read-only
+# print(type(wv))
+# # Loading the synonym question-words into a data frame
+# df = pd.read_csv("synonyms.csv", delimiter=',')
+# print(df.head())
+
+# # Setting up analysis parameters
+# analysis = {
+#     'model_name' : 'word2vec-google-news-300',
+#     'corpus_size' : len(wv),
+#     'c' : 0,
+#     'v' : 0
+# }
+
+# # Finding best synonyms row by row
+# # GoogleNews300_details = []
+# with open('GoogleNews300-details.csv', 'w') as file:    
+#     for i in range(len(df.index)):
+#         question = df.iloc[i]["question"]
+#         answer = df.iloc[i]["answer"]
+#         options = [df.iloc[i]['0'], df.iloc[i]['1'], df.iloc[i]['2'], df.iloc[i]['3']]
+#         # Check if the question-word and at least 1 option word are contained in the word vector
+#         if question in wv and (options[0] in wv or options[1] in wv or options[2] in wv or options[3] in wv):
+#             scores = [wv.similarity(question, options[0]), wv.similarity(question, options[1]),
+#                     wv.similarity(question, options[2]), wv.similarity(question, options[3])]
+#             guess = options[np.argmax(scores)]
+#             if guess == answer:
+#                 label = "correct"
+#                 analysis['c'] = analysis.get('c', 0) + 1
+#             else:
+#                 label = "incorrect"
+#             analysis['v'] = analysis.get('v', 0) + 1
+#         else:
+#             guess = options[np.random.randint(0,3)]
+#             label = "guess"
+#         output_line = [[question, answer, guess, label]]
+#         # Write line to csv file
+#         writer = csv.writer(file, delimiter=',')
+#         writer.writerows(output_line)
+# with open('analysis.csv', 'a') as file:
+#     analysis['accuracy'] = analysis.get('c') / analysis.get('v') if analysis.get('v') > 0 else 0
+#     writer = csv.writer(file, delimiter=',')
+#     writer.writerows([analysis.values()])
+
+if __name__ == '__main__':
+    run()

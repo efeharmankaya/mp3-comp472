@@ -1,0 +1,5 @@
+word2vec-google-news-300,3000000,70,79,0.8860759493670886
+glove-wiki-gigaword-300,400000,71,80,0.8875
+conceptnet-numberbatch-17-06-300,1917247,0,0,0
+glove-twitter-25,1193514,38,78,0.48717948717948717
+glove-wiki-gigaword-100,400000,65,80,0.8125

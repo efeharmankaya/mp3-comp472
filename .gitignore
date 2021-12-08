@@ -1,3 +1,2 @@
-
-GoogleNews300.wordvectors
-GoogleNews300.wordvectors.vectors.npy
+models/*wordvectors
+models/*wordvectors.vectors.npy
