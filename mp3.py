@@ -79,13 +79,15 @@ def run():
     
     # Plotting the model performances
     model_names = [m["model_name"] for m in models]
-    fig = plt.figure(figsize = (10, 5))
+    fig = plt.figure(figsize = (10, 10))
     plt.bar(model_names, model_accuracies, color ='maroon',
-            width = 0.2)
+            width = 0.4)
+    plt.xticks(range(len(model_names)), model_names, rotation=45)
     plt.xlabel("Models")
     plt.ylabel("Accuracy")
     plt.title("Accuracy comparison of models")
     plt.grid(color='#95a5a6', linestyle='--', axis='y')
+    fig.subplots_adjust(bottom=0.2)
     plt.savefig("output/model-accuracies.pdf")
 
 if __name__ == '__main__':
