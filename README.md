@@ -1,3 +1,4 @@
+https://github.com/efeharmankaya/mp3-comp472
 # Mini-Project 3 Experiments with Word Embeddings
 
 This project aims to experiment with word embeddings to solve a synonym test and compare the results between different models, random choice and a human gold-standard.
