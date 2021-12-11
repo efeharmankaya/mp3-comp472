@@ -1,6 +1,7 @@
 import csv
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 from gensim.models import KeyedVectors
 import gensim.downloader as api
 import os.path
@@ -13,12 +14,12 @@ models = [
     {'model_name' : 'word2vec-google-news-300', 'model_file_name' : 'GoogleNews300.wordvectors', 'details_file_name' : 'GoogleNews300-details.csv'},
 
     # # same embedding size (300)
-    {'model_name' : 'glove-wiki-gigaword-300', 'model_file_name' : 'GloveWikiGigaword300.wordvectors', 'details_file_name' : 'GloveWikiGigaword300-details.csv'},
-    {'model_name' : 'fasttext-wiki-news-subwords-300', 'model_file_name' : 'FastTextWikiNews300.wordvectors', 'details_file_name' : 'FastTextWikiNews300-details.csv'},
+    #{'model_name' : 'glove-wiki-gigaword-300', 'model_file_name' : 'GloveWikiGigaword300.wordvectors', 'details_file_name' : 'GloveWikiGigaword300-details.csv'},
+    #{'model_name' : 'fasttext-wiki-news-subwords-300', 'model_file_name' : 'FastTextWikiNews300.wordvectors', 'details_file_name' : 'FastTextWikiNews300-details.csv'},
         
     # # different embedding size (25,100)
-    {'model_name' : 'glove-twitter-100', 'model_file_name' : 'GloveTwitter100.wordvectors', 'details_file_name' : 'GloveTwitter100-details.csv'},
-    {'model_name' : 'glove-wiki-gigaword-100', 'model_file_name' : 'GloveWikiGigaword100.wordvectors', 'details_file_name' : 'GloveWikiGigaword100-details.csv'},
+    #{'model_name' : 'glove-twitter-100', 'model_file_name' : 'GloveTwitter100.wordvectors', 'details_file_name' : 'GloveTwitter100-details.csv'},
+    #{'model_name' : 'glove-wiki-gigaword-100', 'model_file_name' : 'GloveWikiGigaword100.wordvectors', 'details_file_name' : 'GloveWikiGigaword100-details.csv'},
 ]
 
 def load_models():
@@ -31,7 +32,8 @@ def load_models():
 def run():
     # Ensure all models are loaded and saved
     load_models()    
-    
+    # Create a list of will be used to plot the performance of each model
+    model_accuracies = [] 
     for model in models:
         wv = KeyedVectors.load(f'models/{model.get("model_file_name")}', mmap='r')    # Read-only
         df = pd.read_csv("models/synonyms.csv", delimiter=',')
@@ -71,6 +73,20 @@ def run():
             analysis['accuracy'] = analysis.get('c') / analysis.get('v', -1) if analysis.get('v', 0) > 0 else 0
             writer = csv.writer(file, delimiter=',')
             writer.writerows([analysis.values()])
+            
+        # Append the model accuracy to the list of accuracies
+        model_accuracies.append(analysis['accuracy'])
+    
+    # Plotting the model performances
+    model_names = [m["model_name"] for m in models]
+    fig = plt.figure(figsize = (10, 5))
+    plt.bar(model_names, model_accuracies, color ='maroon',
+            width = 0.2)
+    plt.xlabel("Models")
+    plt.ylabel("Accuracy")
+    plt.title("Accuracy comparison of models")
+    plt.grid(color='#95a5a6', linestyle='--', axis='y')
+    plt.savefig("output/model-accuracies.pdf")
 
 if __name__ == '__main__':
     run()
