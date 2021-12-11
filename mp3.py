@@ -14,10 +14,10 @@ models = [
 
     # # same embedding size (300)
     {'model_name' : 'glove-wiki-gigaword-300', 'model_file_name' : 'GloveWikiGigaword300.wordvectors', 'details_file_name' : 'GloveWikiGigaword300-details.csv'},
-    {'model_name' : 'conceptnet-numberbatch-17-06-300', 'model_file_name' : 'ConceptNet300.wordvectors', 'details_file_name' : 'ConceptNet300-details.csv'},
+    {'model_name' : 'fasttext-wiki-news-subwords-300', 'model_file_name' : 'FastTextWikiNews300.wordvectors', 'details_file_name' : 'FastTextWikiNews300-details.csv'},
         
     # # different embedding size (25,100)
-    {'model_name' : 'glove-twitter-25', 'model_file_name' : 'GloveTwitter25.wordvectors', 'details_file_name' : 'GloveTwitter25-details.csv'},
+    {'model_name' : 'glove-twitter-100', 'model_file_name' : 'GloveTwitter100.wordvectors', 'details_file_name' : 'GloveTwitter100-details.csv'},
     {'model_name' : 'glove-wiki-gigaword-100', 'model_file_name' : 'GloveWikiGigaword100.wordvectors', 'details_file_name' : 'GloveWikiGigaword100-details.csv'},
 ]
 
