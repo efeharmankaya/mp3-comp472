@@ -13,13 +13,13 @@ models = [
     # base model
     {'model_name' : 'word2vec-google-news-300', 'model_file_name' : 'GoogleNews300.wordvectors', 'details_file_name' : 'GoogleNews300-details.csv'},
 
-    # # same embedding size (300)
-    {'model_name' : 'glove-wiki-gigaword-300', 'model_file_name' : 'GloveWikiGigaword300.wordvectors', 'details_file_name' : 'GloveWikiGigaword300-details.csv'},
-    {'model_name' : 'fasttext-wiki-news-subwords-300', 'model_file_name' : 'FastTextWikiNews300.wordvectors', 'details_file_name' : 'FastTextWikiNews300-details.csv'},
-        
-    # # different embedding size (25,100)
-    {'model_name' : 'glove-twitter-100', 'model_file_name' : 'GloveTwitter100.wordvectors', 'details_file_name' : 'GloveTwitter100-details.csv'},
+    # glove-wiki-gigaword (200, 100)
+    {'model_name' : 'glove-wiki-gigaword-200', 'model_file_name' : 'GloveWikiGigaword200.wordvectors', 'details_file_name' : 'GloveWikiGigaword200-details.csv'},
     {'model_name' : 'glove-wiki-gigaword-100', 'model_file_name' : 'GloveWikiGigaword100.wordvectors', 'details_file_name' : 'GloveWikiGigaword100-details.csv'},
+        
+    # glove-twitter (200, 100)
+    {'model_name' : 'glove-twitter-200', 'model_file_name' : 'GloveTwitter200.wordvectors', 'details_file_name' : 'GloveTwitter200-details.csv'},
+    {'model_name' : 'glove-twitter-100', 'model_file_name' : 'GloveTwitter100.wordvectors', 'details_file_name' : 'GloveTwitter100-details.csv'},
 ]
 
 def load_models():
