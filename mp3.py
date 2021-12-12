@@ -79,6 +79,8 @@ def run():
     
     # Plotting the model performances
     model_names = [m["model_name"] for m in models]
+    model_names.append("human-gold-standard")
+    model_accuracies.append(0.8557)
     fig = plt.figure(figsize = (10, 10))
     plt.bar(model_names, model_accuracies, color ='maroon',
             width = 0.4)
