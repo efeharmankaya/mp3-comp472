@@ -77,10 +77,16 @@ def run():
         # Append the model accuracy to the list of accuracies
         model_accuracies.append(analysis['accuracy'])
     
+    # Random baseline
+    random_accuracy = random_baseline()
+    
     # Plotting the model performances
     model_names = [m["model_name"] for m in models]
     model_names.append("human-gold-standard")
     model_accuracies.append(0.8557)
+    model_names.append("random-baseline")
+    model_accuracies.append(random_accuracy)
+    
     fig = plt.figure(figsize = (10, 10))
     plt.bar(model_names, model_accuracies, color ='maroon',
             width = 0.4)
@@ -91,6 +97,45 @@ def run():
     plt.grid(color='#95a5a6', linestyle='--', axis='y')
     fig.subplots_adjust(bottom=0.2)
     plt.savefig("output/model-accuracies.pdf")
+
+
+def random_baseline():
+    df = pd.read_csv("models/synonyms.csv", delimiter=',')
+    
+    # Set analysis parameters to current model
+    analysis = {
+        'model_name' : 'random-baseline',
+        'corpus_size' : 0,
+        'c' : 0,
+        'v' : 0
+    }
+    with open("output/RandomBaseline-details.csv", 'w') as file:
+        for i in range(len(df.index)):
+            question = df.iloc[i]["question"]
+            answer = df.iloc[i]["answer"]
+            options = [df.iloc[i]['0'], df.iloc[i]['1'], df.iloc[i]['2'], df.iloc[i]['3']]
+
+            guess = options[np.random.randint(0,3)]
+            
+            if guess == answer:
+                label = "correct"
+                analysis['c'] = analysis.get('c', 0) + 1
+            else:
+                label = "incorrect"
+            analysis['v'] = analysis.get('v', 0) + 1
+            
+            output_line = [[question, answer, guess, label]]
+            
+            # Write line to csv file
+            writer = csv.writer(file, delimiter=',')
+            writer.writerows(output_line) 
+    with open('output/analysis.csv', 'a') as file:
+        analysis['accuracy'] = analysis.get('c') / analysis.get('v', -1) if analysis.get('v', 0) > 0 else 0
+        writer = csv.writer(file, delimiter=',')
+        writer.writerows([analysis.values()])
+        
+    return analysis.get('accuracy')
+                
 
 if __name__ == '__main__':
     run()
