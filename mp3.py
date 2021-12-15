@@ -22,6 +22,14 @@ models = [
     {'model_name' : 'glove-twitter-100', 'model_file_name' : 'GloveTwitter100.wordvectors', 'details_file_name' : 'GloveTwitter100-details.csv'},
 ]
 
+# base
+# input_file_path = 'models/synonyms.csv'
+# output_dir = 'output'
+
+# for demo output
+input_file_path = 'models/sample_29.csv'
+output_dir = 'demo'
+
 def load_models():
     # Download the pretrained model word vectors using gensim.downloader and save it. Runs only once.
     for model in models:
@@ -36,7 +44,7 @@ def run():
     model_accuracies = [] 
     for model in models:
         wv = KeyedVectors.load(f'models/{model.get("model_file_name")}', mmap='r')    # Read-only
-        df = pd.read_csv("models/synonyms.csv", delimiter=',')
+        df = pd.read_csv(input_file_path, delimiter=',')
         
         # Set analysis parameters to current model
         analysis = {
@@ -46,7 +54,7 @@ def run():
             'v' : 0
         }
         
-        with open(f'output/{model.get("details_file_name")}', 'w') as file:    
+        with open(f'{output_dir}/{model.get("details_file_name")}', 'w') as file:    
             for i in range(len(df.index)):
                 question = df.iloc[i]["question"]
                 answer = df.iloc[i]["answer"]
@@ -69,7 +77,7 @@ def run():
                 # Write line to csv file
                 writer = csv.writer(file, delimiter=',')
                 writer.writerows(output_line)
-        with open('output/analysis.csv', 'a') as file:
+        with open(f'{output_dir}/analysis.csv', 'a') as file:
             analysis['accuracy'] = analysis.get('c') / analysis.get('v', -1) if analysis.get('v', 0) > 0 else 0
             writer = csv.writer(file, delimiter=',')
             writer.writerows([analysis.values()])
@@ -96,11 +104,11 @@ def run():
     plt.title("Accuracy comparison of models")
     plt.grid(color='#95a5a6', linestyle='--', axis='y')
     fig.subplots_adjust(bottom=0.2)
-    plt.savefig("output/model-accuracies.pdf")
+    plt.savefig(f"{output_dir}/model-accuracies.pdf")
 
 
 def random_baseline():
-    df = pd.read_csv("models/synonyms.csv", delimiter=',')
+    df = pd.read_csv(input_file_path, delimiter=',')
     
     # Set analysis parameters to current model
     analysis = {
@@ -109,7 +117,7 @@ def random_baseline():
         'c' : 0,
         'v' : 0
     }
-    with open("output/RandomBaseline-details.csv", 'w') as file:
+    with open(f"{output_dir}/RandomBaseline-details.csv", 'w') as file:
         for i in range(len(df.index)):
             question = df.iloc[i]["question"]
             answer = df.iloc[i]["answer"]
@@ -129,7 +137,7 @@ def random_baseline():
             # Write line to csv file
             writer = csv.writer(file, delimiter=',')
             writer.writerows(output_line) 
-    with open('output/analysis.csv', 'a') as file:
+    with open(f'{output_dir}/analysis.csv', 'a') as file:
         analysis['accuracy'] = analysis.get('c') / analysis.get('v', -1) if analysis.get('v', 0) > 0 else 0
         writer = csv.writer(file, delimiter=',')
         writer.writerows([analysis.values()])
