@@ -1,0 +1,120 @@
+32.	deftly
+a.	skillfully
+b.	prudently
+c.	occasionally
+d.	humorously
+a
+75.	sufficient
+a.	recent
+b.	physiological
+c.	enough
+d.	valuable
+c
+76.	fashion
+a.	ration
+b.	fathom
+c.	craze
+d.	manner
+d
+3.	haphazardly
+a.	dangerously
+b.	densely
+c.	randomly
+d.	linearly
+c
+73.	uniform
+a.	hard
+b.	complex
+c.	alike
+d.	sharp
+c
+48.	situated
+a.	rotating
+b.	isolated
+c.	emptying
+d.	positioned
+d
+22.	spot
+a.	climate
+b.	latitude
+c.	sea
+d.	location
+d
+39.	hind
+a.	curved
+b.	muscular
+c.	hairy
+d.	rear
+d
+78.	bigger
+a.	steadier
+b.	closer
+c.	larger
+d.	better
+c
+27.	narrow
+a.	clear
+b.	freezing
+c.	thin
+d.	poisonous
+c
+36.	unmatched
+a.	unrecognized
+b.	unequaled
+c.	alienated
+d.	emulated
+b
+54.	halfheartedly
+a.	customarily
+b.	bipartisanly
+c.	apathetically
+d.	unconventionally
+c
+61.	generally
+a.	descriptively
+b.	broadly
+c.	controversially
+d.	accurately
+b
+17.	constantly
+a.	instantly
+b.	continually
+c.	rapidly
+d.	accidentally
+b
+57.	hailed
+a.	judged
+b.	acclaimed
+c.	remembered
+d.	addressed
+b
+20.	costly
+a.	expensive
+b.	beautiful
+c.	popular
+d.	complicated
+a
+62.	sustained
+a.	prolonged
+b.	refined
+c.	lowered
+d.	analyzed
+a
+13.	hasten
+a.	permit
+b.	determine
+c.	accelerate
+d.	accompany
+c
+8.	consumed
+a.	bred
+b.	caught
+c.	eaten
+d.	supplied
+c
+25.	easygoing
+a.	frontier
+b.	boring
+c.	farming
+d.	relaxed
+d
