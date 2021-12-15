@@ -23,12 +23,12 @@ models = [
 ]
 
 # base
-# input_file_path = 'models/synonyms.csv'
-# output_dir = 'output'
+input_file_path = 'models/synonyms.csv'
+output_dir = 'output'
 
 # for demo output
-input_file_path = 'models/sample_29.csv'
-output_dir = 'demo'
+# input_file_path = 'models/sample_29.csv'
+# output_dir = 'demo'
 
 def load_models():
     # Download the pretrained model word vectors using gensim.downloader and save it. Runs only once.
